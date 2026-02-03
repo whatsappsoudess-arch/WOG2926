@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Ma Valentine 💘</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body { overflow: hidden; }
+
+.rose {
+  position: fixed;
+  font-size: 26px;
+  animation: fallRose 8s linear infinite;
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+@keyframes fallRose {
+  0% { transform: translateY(-50px) rotate(0deg); }
+  100% { transform: translateY(110vh) rotate(360deg); }
+}
+
+.heart {
+  position: fixed;
+  font-size: 24px;
+  animation: floatUp 4s linear forwards;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-600px) scale(1.5); opacity: 0; }
+}
+</style>
+</head>
+
+<body class="bg-gradient-to-br from-pink-700 via-red-700 to-pink-900 min-h-screen flex items-center justify-center text-white">
+
+<!-- Musique -->
+<audio id="loveMusic" loop>
+  <source src="C:\Users\Lenovo\Downloads\SaintValentin\Kiko - Odjo (Clip Officiel).mp3" type="audio/mpeg">
+</audio>
+
+<!-- Roses -->
+<script>
+for(let i=0;i<20;i++){
+  const rose = document.createElement("div");
+  rose.className = "rose";
+  rose.innerHTML = "🌹";
+  rose.style.left = Math.random()*100 + "vw";
+  rose.style.animationDelay = Math.random()*8 + "s";
+  rose.style.fontSize = (20 + Math.random()*20) + "px";
+  document.body.appendChild(rose);
+}
+</script>
+
+<div id="cardBox" class="bg-white/20 backdrop-blur-xl p-10 rounded-3xl shadow-2xl text-center max-w-md w-full relative z-10">
+  <h1 class="text-4xl font-extrabold mb-6">💖 Veux-tu être ma Valentine ? 💖</h1>
+
+  <div id="buttons" class="flex justify-center gap-6 mt-6">
+    <button id="btnYes" class="bg-pink-500 px-8 py-4 rounded-2xl text-xl font-bold shadow-lg hover:bg-pink-600 transition-all">
+      Oui 💘
+    </button>
+    <button id="btnNo" class="bg-gray-300 text-black px-8 py-4 rounded-2xl text-xl font-bold shadow-lg hover:bg-gray-400 transition-all">
+      Non 😢
+    </button>
+  </div>
+
+  <div id="message" class="mt-6 text-xl font-bold"></div>
+</div>
+
+<!-- GIF Oui -->
+<img id="yesGif" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZXBjYWt4cmNxemx2NG1lajFoYW9wZXVmYjR0NnE3OHBqemF4dnJoZiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/PF6e8Xq8dVnVX1BGLS/giphy.gif"
+     class="fixed inset-0 w-full h-full object-contain bg-black/70 hidden z-50">
+
+<script>
+const btnYes = document.getElementById("btnYes");
+const btnNo = document.getElementById("btnNo");
+const message = document.getElementById("message");
+const yesGif = document.getElementById("yesGif");
+const music = document.getElementById("loveMusic");
+const cardBox = document.getElementById("cardBox");
+
+let yesScale = 1;
+let noScale = 1;
+
+function heartRain(count = 40){
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.innerHTML = "💖";
+      heart.style.left = Math.random()*100 + "vw";
+      heart.style.top = "100vh";
+      heart.style.fontSize = (20 + Math.random()*20) + "px";
+      document.body.appendChild(heart);
+      setTimeout(()=>heart.remove(), 4000);
+    }, i*100);
+  }
+}
+
+function loveConfetti(){
+  confetti({
+    particleCount: 200,
+    spread: 120,
+    origin: { y: 0.6 },
+    colors: ['#ff69b4','#ff1493','#ff0000'],
+    shapes: ['heart']
+  });
+}
+
+function sadConfetti(){
+  confetti({
+    particleCount: 120,
+    spread: 80,
+    origin: { y: 0.6 },
+    colors: ['#777','#444','#222']
+  });
+}
+
+btnYes.onclick = () => {
+  music.play();
+  heartRain(60);
+  loveConfetti();
+  yesGif.classList.remove("hidden");
+
+  setTimeout(()=>{
+    yesGif.classList.add("hidden");
+    cardBox.innerHTML = `
+      <h2 class="text-3xl font-extrabold mb-4">💌 Ma Valentine 💘</h2>
+      <p class="text-lg leading-relaxed whitespace-pre-line">
+Merci d’avoir accepté d’être ma Valentine.
+Ce simple mot a illuminé mon cœur plus que tu ne peux l’imaginer.
+
+Le 14 février arrive,
+et une surprise t’attend…
+préparée avec le cœur, juste pour toi.
+
+À très vite 💌
+Ton Valentin.
+      </p>
+    `;
+  }, 3000);
+};
+
+btnNo.onclick = () => {
+  sadConfetti();
+  message.innerHTML = "😢 Allez... dis OUI... mon cœur est en jeu 💔";
+
+  noScale -= 0.1;
+  if(noScale < 0.4) noScale = 0.4;
+  btnNo.style.transform = `scale(${noScale})`;
+
+  yesScale += 0.15;
+  btnYes.style.transform = `scale(${yesScale})`;
+
+  if(yesScale > 2){
+    message.innerHTML = "😏 Le bouton OUI est devenu énorme... c’est un signe 💖";
+  }
+};
+</script>
+
+</body>
+</html>
